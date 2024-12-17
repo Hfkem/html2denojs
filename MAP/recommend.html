@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我要推薦</title>
+    <style>
+        body {
+            font-family:'Roboto', sans-serif;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            height:100vh;
+            margin:0;
+            background-color:#56aec4;
+        }
+        form {
+            background:white;
+            padding:20px;
+            border-radius:8px;
+            box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);
+            width:300px;
+        }
+        form input, form textarea, form button {
+            display:block;
+            width:100%;
+            margin-bottom:15px;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+        form button {
+            background-color:#007bff;
+            color:white;
+            cursor:pointer;
+        }
+        form button:hover {
+            background-color:#0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>推薦店家</h1>
+    <form id="recommendForm">
+        <input type="text" name="name" placeholder="店名" required>
+        <input type="number" name="latitude" placeholder="經度 (e.g. 24.437)" step="0.0001" required>
+        <input type="number" name="longitude" placeholder="緯度 (e.g. 118.317)" step="0.0001" required>
+        <input type="number" name="rating" placeholder="評分 (1-5)" min="1" max="5" required>
+        <textarea name="review" placeholder="短評" rows="3" required></textarea>
+        <button type="submit">送出推薦</button>
+    </form>
+    <script>
+        document.getElementById('recommendForm').onsubmit = function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch('/add-recommendation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message);
+                window.location.href = 'map.html';
+            });
+        };
+    </script>
+</body>
+</html>
